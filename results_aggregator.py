@@ -10,13 +10,13 @@ def load_csv(filename: str):
 	return df
 
 
-def filter_data(a: pd.DataFrame):
-	return a[a["Resolution"] == 4096]
+def filter_data(df: pd.DataFrame):
+	return df[df["Resolution"] == 4096]
 
 
-def generate_plot(a: pd.DataFrame, output_name: str):
-	new = a[a["Old?"] == 0]
-	old = a[a["Old?"] == 1]
+def generate_plot(df: pd.DataFrame, output_name: str):
+	new = df[df["Old?"] == 0]
+	old = df[df["Old?"] == 1]
 	plt.plot(old.index, old["Time"], label="old")
 	plt.plot(new.index, new["Time"], label="new")
 	plt.xlabel("Number of charts")

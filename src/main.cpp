@@ -124,9 +124,11 @@ int traverseDir(const fs::path &input_directory, const fs::path &output_director
 			std::vector<std::string> arguments = {
 					"x_uv_comp",
 					(entry.path() / mesh_filename).c_str(),
-					(output_directory / entry.path().filename() / "output").c_str(),
-					log.c_str()
+					(output_directory / entry.path().filename() / "output").c_str()
 			};
+			if (!log.empty())
+				arguments.push_back(log);
+
 			std::vector<char *> in_argv;
 			for (auto& arg : arguments) {
 				in_argv.push_back(arg.data());
@@ -136,7 +138,6 @@ int traverseDir(const fs::path &input_directory, const fs::path &output_director
 				return 1;
 			}
 			std::cout << "----------------------------------------------------" << std::endl << std::endl;
-
 		}
 	}
     return 0;

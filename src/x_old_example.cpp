@@ -293,7 +293,7 @@ namespace x_old_example {
 				  << "    rotateCharts:       " << (options.rotateCharts ? "true" : "false") << std::endl;
 	}
 
-    xatlas_old::PackOptions set_options(std::ostringstream &log) {
+	xatlas_old::PackOptions set_options(std::ostringstream &log, bool silent = false) {
         xatlas_old::PackOptions options;
 
         options.maxChartSize = 0;
@@ -312,7 +312,7 @@ namespace x_old_example {
         options.rotateCharts = TRANSPOSE;
 
 		log << options.resolution << "," << options.bruteForce << ",0,0," << options.rotateCharts << ",";
-		print_options(options);
+		if (!silent) print_options(options);
         return options;
     }
 
@@ -330,6 +330,8 @@ namespace x_old_example {
         }
         std::string input_name = argv[1];
         std::string output_name = argv[2];
+
+		bool dont_print_options = argc > 3 && !std::string(argv[3]).empty();
 
 		std::ostringstream log_results_oss;
 		log_results_oss << "\n" << output_name << std::put_time(&tim1, ",%Y.%m.%d %H:%M:%S,1,");
@@ -452,7 +454,7 @@ namespace x_old_example {
 
         // Pack charts
         {
-            xatlas_old::PackOptions options = set_options(log_results_oss);
+			xatlas_old::PackOptions options = set_options(log_results_oss, dont_print_options);
             xatlas_old::PackCharts(atlas, options);
         }
 		globalT.stop();

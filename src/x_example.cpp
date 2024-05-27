@@ -299,7 +299,7 @@ namespace x_example {
 				  << "    coarseLevels:              " << options.coarseLevels << std::endl;
 	}
 
-    xatlas::PackOptions set_options(std::ostringstream &log) {
+    xatlas::PackOptions set_options(std::ostringstream &log, bool silent = false) {
         xatlas::PackOptions options;
 
         options.maxChartSize = 0;
@@ -326,7 +326,7 @@ namespace x_example {
 		options.coarseLevels = COARSE_STEPS;
 
 		log << options.resolution << "," << options.bruteForce << "," << options.useOpenMP << "," << options.coarseLevels << "," << options.transposeCharts << ",";
-		print_options(options);
+		if (!silent) print_options(options);
         return options;
     }
 
@@ -344,6 +344,8 @@ namespace x_example {
         }
         std::string input_name = argv[1];
         std::string output_name = argv[2];
+
+		bool dont_print_options = argc > 3 && !std::string(argv[3]).empty();
 
 		std::ostringstream log_results_oss;
 		log_results_oss << "\n" << output_name << std::put_time(&tim1, ",%Y.%m.%d %H:%M:%S,0,");
@@ -466,7 +468,7 @@ namespace x_example {
 
         // Pack charts
         {
-            xatlas::PackOptions options = set_options(log_results_oss);
+            xatlas::PackOptions options = set_options(log_results_oss, dont_print_options);
             xatlas::PackCharts(atlas, options);
         }
 		globalT.stop();
