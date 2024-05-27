@@ -49,8 +49,8 @@ void getPESimple(const std::string& file_ply, const std::string &log) {
 #endif
 }
 
-void getPEXatlas(const std::string& output_name, const std::string &log) {
-    getPESimple(output_name + (BRUTE_FORCE ? "_brute" : "_rand") + "_x_charts", log);
+void getPEXatlas(const std::string& output_name, bool old, const std::string &log) {
+    getPESimple(output_name + (BRUTE_FORCE ? "_brute" : "_rand") + (old ? "_old" : "") + "_charts", log);
 }
 
 int singleFileOld(int argc, char *argv[]) {
@@ -64,7 +64,7 @@ int singleFileOld(int argc, char *argv[]) {
 	if (x_old_example::main(argc, argv) == EXIT_FAILURE) {
 		return EXIT_FAILURE;
 	}
-	getPEXatlas(argv[2], log);
+	getPEXatlas(argv[2], true, log);
 	return 0;
 }
 
@@ -79,7 +79,7 @@ int singleFileNew(int argc, char *argv[]) {
     if (x_example::main(argc, argv) == EXIT_FAILURE) {
 		return EXIT_FAILURE;
 	}
-	getPEXatlas(argv[2], log);
+	getPEXatlas(argv[2], false, log);
 
     return 0;
 }

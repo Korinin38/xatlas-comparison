@@ -10,18 +10,24 @@ def load_csv(filename: str):
 	return df
 
 
-if __name__ == "__main__":
-	a = load_csv(sys.argv[1])
-	# a = a["Time"]
-	print(a)
-	print(a.index)
-	# a.reset_index().plot.scatter(x="Charts", y="Time")
-	new = a[(a["Old?"] == 0) & (a["Resolution"] == 8192)]
-	old = a[(a["Old?"] == 1) & (a["Resolution"] == 8192)]
+def filter_data(a: pd.DataFrame):
+	return a[a["Resolution"] == 4096]
+
+
+def generate_plot(a: pd.DataFrame, output_name: str):
+	new = a[a["Old?"] == 0]
+	old = a[a["Old?"] == 1]
 	plt.plot(old.index, old["Time"], label="old")
 	plt.plot(new.index, new["Time"], label="new")
 	plt.xlabel("Number of charts")
 	plt.ylabel("Time, s")
 	plt.legend()
 	plt.title("Comparison between new and old aglorithms")
-	plt.savefig(sys.argv[2])
+	plt.savefig(output_name)
+
+
+if __name__ == "__main__":
+	a = load_csv(sys.argv[1])
+	a = filter_data(a)
+	generate_plot(a, sys.argv[2])
+
