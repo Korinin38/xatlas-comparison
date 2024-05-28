@@ -10,6 +10,8 @@
 
 namespace fs = std::filesystem;
 
+#define XC_RETHROW_ERROR(x) if(x == EXIT_FAILURE) return EXIT_FAILURE;
+
 //#define DEFAULT_MAIN x_example
 //#define DEFAULT_MAIN x_old_example
 
@@ -49,43 +51,27 @@ void getPESimple(const std::string& file_ply, const std::string &log) {
 #endif
 }
 
-void getPEXatlas(const std::string& output_name, bool old, const std::string &log) {
+void getPEXatlas(const std::string &output_name, const std::string &log, bool old)
+{
     getPESimple(output_name + (BRUTE_FORCE ? "_brute" : "_rand") + (old ? "_old" : "") + "_charts", log);
 }
 
-int singleFileOld(int argc, char *argv[]) {
+int singleFile(int argc, char *argv[], bool old) {
 	fs::path output = argv[2];
 	if (!exists(output.parent_path())) {
 		std::cout << "Error: " << output << " has invalid path." << std::endl;
 		return 1;
 	}
-	std::string log = (argc > 3) ? argv[3] : "";
 
-	if (x_old_example::main(argc, argv) == EXIT_FAILURE) {
-		return EXIT_FAILURE;
-	}
-	getPEXatlas(argv[2], true, log);
+	XC_RETHROW_ERROR((old ? x_old_example::main(argc, argv) : x_example::main(argc, argv)));
+	std::string log = (argc > 3) ? argv[3] : "";
+	getPEXatlas(argv[2], log, old);
 	return 0;
 }
 
-int singleFileNew(int argc, char *argv[]) {
-    fs::path output = argv[2];
-    if (!exists(output.parent_path())) {
-        std::cout << "Error: " << output << " has invalid path." << std::endl;
-        return 1;
-    }
-	std::string log = (argc > 3) ? argv[3] : "";
-
-    if (x_example::main(argc, argv) == EXIT_FAILURE) {
-		return EXIT_FAILURE;
-	}
-	getPEXatlas(argv[2], false, log);
-
-    return 0;
-}
-int singleFile(int argc, char *argv[]) {
-	if (singleFileOld(argc, argv) == EXIT_FAILURE) return EXIT_FAILURE;
-	if (singleFileNew(argc, argv) == EXIT_FAILURE) return EXIT_FAILURE;
+int singleFileFull(int argc, char *argv[]) {
+	XC_RETHROW_ERROR(singleFile(argc, argv, false));
+	XC_RETHROW_ERROR(singleFile(argc, argv, true));
 	return 0;
 }
 
@@ -134,11 +120,9 @@ int traverseDir(const fs::path &input_directory, const fs::path &output_director
 				in_argv.push_back(arg.data());
 			}
 
-			if (method(in_argv.size(), in_argv.data()) == EXIT_FAILURE) {
-				return 1;
-			}
-			std::cout << "----------------------------------------------------" << std::endl << std::endl;
+			XC_RETHROW_ERROR(singleFile(in_argv.size(), in_argv.data(), (i == 0)));
 		}
+		std::cout << "----------------------------------------------------" << std::endl << std::endl;
 	}
     return 0;
 }
@@ -186,7 +170,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     if (!is_directory(input)) {
-        return singleFile(argc, argv);
+        return singleFileFull(argc, argv);
     } else {
         return traverseDir(input, output, log);
     }
