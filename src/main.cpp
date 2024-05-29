@@ -94,7 +94,7 @@ int traverseDir(const fs::path &input_directory, const fs::path &output_director
     std::cout << "Found " << dirs.size() << " directories with \"texmetro.json\" inside." << std::endl;
 
 
-	for (auto method : {singleFileOld, singleFileNew}) {
+	for (int i = 0; i < 2; ++i) {
 		for (auto &entry: dirs) {
 			if (!is_directory(entry))
 				continue;
