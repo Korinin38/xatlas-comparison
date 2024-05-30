@@ -44,13 +44,6 @@ add_library(xatlas_old
         libs/xatlas-old/xatlas.h
         libs/xatlas-old/xatlas.cpp)
 
-find_package(X11 REQUIRED)
-add_library(CImg
-        libs/xatlas/CImg.h)
-target_link_libraries(CImg X11)
-set_target_properties(CImg PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(xatlas CImg)
-
 target_link_libraries(xatlas libclew libgpu libutils)
 
 add_library(stb_image
